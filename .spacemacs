@@ -620,7 +620,7 @@ before packages are loaded."
     (define-key ranger-normal-mode-map (kbd "l") 'ranger-prev-file)
     (define-key ranger-normal-mode-map (kbd ";") 'ranger-find-file)
   )
-
+  ;;test
 
   ;; (define-key ranger-dired-map (kbd "j") 'dired-up-directory)
   ;; (define-key ranger-dired-map (kbd "k") 'dired-next-line)
