@@ -3,7 +3,7 @@
 windows="/c/Users/dylan.ritchings/AppData/Roaming"
 mac="$HOME"
 
-git --git-dir="$windows/.spacemacs" --work-tree="$HOME" init
+git --git-dir="$windows/" --work-tree="$HOME" init
 export GIT_DIR="$windows/.spacemacs"
 
 cd $HOME/.dotfiles/shared
