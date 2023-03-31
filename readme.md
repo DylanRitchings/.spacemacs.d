@@ -1,5 +1,8 @@
 ## Installation
 ```bash
+windows="/c/Users/dylan.ritchings/AppData/Roaming"
+mac="$HOME"
+
 git --git-dir="$HOME/.spacemacs" --work-tree="$HOME" init
 export GIT_DIR="$HOME/.spacemacs"
 
