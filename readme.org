@@ -1,4 +1,5 @@
-## Installation
+* Installation
+
 ```bash
 windows="/c/Users/dylan.ritchings/AppData/Roaming"
 mac="$HOME"
