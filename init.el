@@ -38,12 +38,10 @@ This function should only modify configuration layer settings."
      ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
      ;; `M-m f e R' (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-
      ;; (shell :variables
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
 
-     
      auto-completion
      better-defaults
      csv
@@ -85,10 +83,7 @@ This function should only modify configuration layer settings."
      version-control
      windows-scripts
      yaml
-     ;; (setq-default dotspacemacs-configuration-layers
-     ;;               '(ranger :variables
-     ;;                        ranger-override-dired 'ranger
-     ;;                        ranger-show-preview t))
+
      )
 
 
@@ -260,7 +255,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil, *scratch* buffer will be persistent. Things you write down in
    ;; *scratch* buffer will be saved and restored automatically.
-   dotspacemacs-scratch-buffer-persistent nil
+   dotspacemacs-scratch-buffer-persistent 1
 
    ;; If non-nil, `kill-buffer' on *scratch* buffer
    ;; will bury it instead of killing.
@@ -365,7 +360,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; Which-key delay in seconds. The which-key buffer is the popup listing
    ;; the commands bound to the current keystroke sequence. (default 0.4)
-   dotspacemacs-which-key-delay 0.4
+   dotspacemacs-which-key-delay 0
 
    ;; Which-key frame position. Possible values are `right', `bottom' and
    ;; `right-then-bottom'. right-then-bottom tries to display the frame to the
@@ -456,7 +451,7 @@ It should only modify the values of Spacemacs settings."
    ;;   :size-limit-kb 1000)
    ;; When used in a plist, `visual' takes precedence over `relative'.
    ;; (default nil)
-   dotspacemacs-line-numbers nil
+   dotspacemacs-line-numbers 't
 
    ;; Code folding method. Possible values are `evil', `origami' and `vimish'.
    ;; (default 'evil)
@@ -483,7 +478,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil, start an Emacs server if one is not already running.
    ;; (default nil)
-   dotspacemacs-enable-server nil
+   dotspacemacs-enable-server 1
 
    ;; Set the emacs server socket location.
    ;; If nil, uses whatever the Emacs default is, otherwise a directory path
@@ -494,7 +489,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil, advise quit functions to keep server open when quitting.
    ;; (default nil)
-   dotspacemacs-persistent-server nil
+   dotspacemacs-persistent-server 1
 
    ;; List of search tool executable names. Spacemacs uses the first installed
    ;; tool of the list. Supported tools are `rg', `ag', `pt', `ack' and `grep'.
@@ -567,7 +562,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If nil the home buffer shows the full path of agenda items
    ;; and todos. If non-nil only the file name is shown.
-   dotspacemacs-home-shorten-agenda-source nil
+   dotspacemacs-home-shorten-agenda-source 1
 
    ;; If non-nil then byte-compile some of Spacemacs files.
    dotspacemacs-byte-compile nil))
@@ -609,6 +604,7 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+
   (defun my-ranger-mode-hook ()
     (unbind-key "j" ranger-mode-map)
     (unbind-key "k" ranger-mode-map)
@@ -620,12 +616,7 @@ before packages are loaded."
     (define-key ranger-normal-mode-map (kbd "l") 'ranger-prev-file)
     (define-key ranger-normal-mode-map (kbd ";") 'ranger-find-file)
   )
-  ;;test
 
-  ;; (define-key ranger-dired-map (kbd "j") 'dired-up-directory)
-  ;; (define-key ranger-dired-map (kbd "k") 'dired-next-line)
-  ;; (define-key ranger-dired-map (kbd "l") 'dired-previous-line)
-  ;; (define-key ranger-dired-map (kbd ";") 'dired-find-file)
   (ranger-override-dired-mode t)
 
   (add-hook 'ranger-mode-hook 'my-ranger-mode-hook)
@@ -657,10 +648,6 @@ before packages are loaded."
   (add-hook 'dired-after-readin-hook 'my-dired-mode-hook)
   (add-hook 'dired-mode-hook 'my-dired-mode-hook)
 
-
-  ;; ;; (add-hook 'dired-mode-hook 'my-dired-mode-hook)
-  ;; ;; (add-hook 'after-init-hook 'my-dired-mode-hook)
-
   (define-key evil-normal-state-map "H" 'evil-join)
   (define-key evil-motion-state-map "j" 'evil-backward-char)
   (define-key evil-motion-state-map "J" 'evil-window-top)
@@ -676,16 +663,17 @@ before packages are loaded."
   (define-key evil-window-map "L" 'evil-window-move-very-top)
   (define-key evil-window-map ";" 'evil-window-right)
 
-  ;; (tab-bar-mode 1)
-
-  ;; (tab-line-mode 1)
+  (spacemacs/set-leader-keys "wj" 'evil-window-left)
+  (spacemacs/set-leader-keys "wk" 'evil-window-down)
+  (spacemacs/set-leader-keys "wl" 'evil-window-up)
+  (spacemacs/set-leader-keys "w;" 'evil-window-right)
 
   ;;COMPANY START
   ;; Set the delay (in seconds) before the completion menu appears
   (setq company-idle-delay 0)
   ;; Set the minimum number of characters needed to trigger completion
   (setq company-minimum-prefix-length 1)
- 
+
   ;; Enable fuzzy matching
   (setq company-dabbrev-downcase nil)
   (setq company-dabbrev-ignore-case t)
@@ -693,6 +681,7 @@ before packages are loaded."
   (setq company-dabbrev-code-other-buffers 'all)
   ;;COMPANY END
   (server-mode 1)
+
 )
 
 
