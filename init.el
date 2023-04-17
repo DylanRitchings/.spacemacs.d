@@ -56,13 +56,15 @@ This function should only modify configuration layer settings."
      ivy
      json
      lsp
-     ranger
      markdown
      markdown
      multiple-cursors
      node
      org
+     pdf
+     prodigy
      python
+     ranger
      shell
      shell-scripts
      spacemacs
@@ -78,12 +80,11 @@ This function should only modify configuration layer settings."
      spacemacs-visual
      spell-checking
      syntax-checking
+     tree-sitter
      treemacs
      version-control
      windows-scripts
      yaml
-     pdf
-     tree-sitter
      (tabs :variables
             centaur-tabs-set-close-button t
             centaur-tabs-set-icons t
@@ -682,6 +683,15 @@ before packages are loaded."
   (spacemacs/set-leader-keys "dj" 'dumb-jump-go)
   (spacemacs/set-leader-keys "db" 'dumb-jump-back)
   (spacemacs/set-leader-keys "dr" 'dumb-jump-quick-look)
+
+  (setq shell-file-name "zsh")
+  (setq shell-command-switch "-c")
+
+  (defun open-iterm ()
+    (interactive)
+    (shell-command "open -a iterm.app ."))
+
+  (spacemacs/set-leader-keys "ot" 'open-iterm)
 
   ;;COMPANY START
   ;; Set the delay (in seconds) before the completion menu appears
