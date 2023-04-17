@@ -272,7 +272,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil, *scratch* buffer will be persistent. Things you write down in
    ;; *scratch* buffer will be saved and restored automatically.
-   dotspacemacs-scratch-buffer-persistent 1
+   dotspacemacs-scratch-buffer-persistent t
 
    ;; If non-nil, `kill-buffer' on *scratch* buffer
    ;; will bury it instead of killing.
@@ -504,9 +504,9 @@ It should only modify the values of Spacemacs settings."
    ;; (default nil)
    dotspacemacs-server-socket-dir nil
 
+
    ;; If non-nil, advise quit functions to keep server open when quitting.
    ;; (default nil)
-   dotspacemacs-persistent-server nil
 
    ;; List of search tool executable names. Spacemacs uses the first installed
    ;; tool of the list. Supported tools are `rg', `ag', `pt', `ack' and `grep'.
@@ -623,6 +623,7 @@ Put your configuration code here, except for variables that should be set
 before packages are loaded."
 
   (defun my-ranger-mode-hook ()
+
     (unbind-key "j" ranger-mode-map)
     (unbind-key "k" ranger-mode-map)
     (unbind-key "l" ranger-mode-map)
@@ -689,14 +690,35 @@ before packages are loaded."
   (spacemacs/set-leader-keys "db" 'dumb-jump-back)
   (spacemacs/set-leader-keys "dr" 'dumb-jump-quick-look)
 
-  (setq shell-file-name "zsh")
   (setq shell-command-switch "-c")
+
 
   (defun open-iterm ()
     (interactive)
     (shell-command "open -a iterm.app ."))
 
-  (spacemacs/set-leader-keys "ot" 'open-iterm)
+  (defun open-winterm ()
+    (interactive)
+    (shell-command "wt.exe -w 1 -d ."))
+
+
+  ;; (if (string-match-p (regexp-quote "darwin") ostype)
+
+  (if (eq system-type 'darwin)
+      (progn
+        (spacemacs/set-leader-keys "ot" 'open-iterm)
+        (setq shell-file-name "zsh")
+
+        ;;VTERM
+        (setq shell-default-shell multi-vterm)
+        ))
+
+  (if (eq system-type 'windows-nt)
+      (progn
+        (spacemacs/set-leader-keys "ot" 'open-winterm)
+        (setq dotspacemacs-persistent-server t)
+        ;;(setq shell-file-name "%PROGRAMFILES%/Git/usr/bin/bash.exe")
+        ))
 
   ;;COMPANY START
   ;; Set the delay (in seconds) before the completion menu appears
@@ -712,14 +734,21 @@ before packages are loaded."
   ;;COMPANY END
 
   (set-face-foreground 'line-number "#ffffff")
-  (server-mode 1)
+  ;; (server-mode 1)
   ;;CENTAUR TABS START
   ;; (centaur-tabs-headline-match)
 
   ;;CENTAUR TABS END
 
-  ;;VTERM
-  (setq shell-default-shell multi-vterm)
+
+
+  (defun get-path ()
+    (interactive)
+    (kill-new buffer-file-name)
+    )
+
+  (spacemacs/set-leader-keys "fp" 'get-path)
+  
 )
 
 
