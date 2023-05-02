@@ -85,18 +85,18 @@ This function should only modify configuration layer settings."
      version-control
      windows-scripts
      yaml
-     (tabs :variables
-            centaur-tabs-set-close-button t
-            centaur-tabs-set-icons t
-            centaur-tabs-style "rounded"
-            centaur-tabs-set-bar 'left
-            centaur-tabs-set-modified-marker t
-            centaur-tabs-modified-marker-selected "○"
-            centaur-tabs-modified-marker-unselected "*"
-            ;;x-underline-at-descent-line t
-            centaur-tabs-cycle-scope 'tabs
-            centaur-tabs-group-by-projectile-project t
-            )
+     ;; (tabs :variables
+     ;;        centaur-tabs-set-close-button t
+     ;;        centaur-tabs-set-icons t
+     ;;        centaur-tabs-style "rounded"
+     ;;        centaur-tabs-set-bar 'left
+     ;;        centaur-tabs-set-modified-marker t
+     ;;        centaur-tabs-modified-marker-selected "○"
+     ;;        centaur-tabs-modified-marker-unselected "*"
+     ;;        ;;x-underline-at-descent-line t
+     ;;        centaur-tabs-cycle-scope 'tabs
+     ;;        centaur-tabs-group-by-projectile-project t
+     ;;        )
      )
 
 
@@ -748,7 +748,8 @@ before packages are loaded."
     )
 
   (spacemacs/set-leader-keys "fp" 'get-path)
-  
+
+  (global-bartab-line-mode)
 )
 
 
