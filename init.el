@@ -69,7 +69,11 @@ This function should only modify configuration layer settings."
      ranger
      rust
      scala
-     shell
+     (shell :variables
+            close-window-with-terminal t
+            shell-default-position 'bottom
+            shell-default-shell 'eshell
+            )
      shell-scripts
      spacemacs
      spacemacs-completion
@@ -83,6 +87,7 @@ This function should only modify configuration layer settings."
      spacemacs-modeline
      spacemacs-navigation
      spacemacs-org
+     (org :variables org-enable-github-support t)
      spacemacs-project
      spacemacs-visual
      spell-checking
@@ -293,8 +298,11 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-dark
-                         spacemacs-light)
+   dotspacemacs-themes '(doom-spacegrey
+                         doom-one
+                         doom-oceanic-next)
+
+
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
    ;; `all-the-icons', `custom', `doom', `vim-powerline' and `vanilla'. The
@@ -725,7 +733,11 @@ before packages are loaded."
       (progn
         (spacemacs/set-leader-keys "ot" 'open-winterm)
         (setq dotspacemacs-persistent-server t)
-        ;;(setq shell-file-name "%PROGRAMFILES%/Git/usr/bin/bash.exe")
+        ;; (setq shell-file-name "C:\\msys64\\msys2.exe")
+        ;; (setq shell-file-name "C:\\msys64\\mingw64.exe")
+        ;; (setq shell-file-name "C:\\msys64\\msys2_shell.cmd") 
+        ;; (setq explicit-shell-file-name shell-file-name)
+        ;; (add-to-list 'exec-path "C:\\msys64")
         ))
 
   ;;COMPANY START
@@ -758,6 +770,8 @@ before packages are loaded."
   (spacemacs/set-leader-keys "fp" 'get-path)
 
   (global-bartab-line-mode)
+
+
 )
 
 
