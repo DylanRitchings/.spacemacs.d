@@ -43,37 +43,29 @@ This function should only modify configuration layer settings."
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
 
+     ;; keyboard-layout
      auto-completion
      better-defaults
-     csv
      conda
+     csv
      debug
      emacs-lisp
      emoji
      evil-snipe
-     git
+     (git :variables git-enable-magit-delta-plugin t)
      go
-     helm
      helpful
      ivy
      json
      lsp
-     markdown
      markdown
      multiple-cursors
      node
      org
      pdf
      prodigy
-     python
-     ranger
      rust
      scala
-     (shell :variables
-            close-window-with-terminal t
-            shell-default-position 'bottom
-            shell-default-shell 'eshell
-            )
      shell-scripts
      spacemacs
      spacemacs-completion
@@ -87,17 +79,27 @@ This function should only modify configuration layer settings."
      spacemacs-modeline
      spacemacs-navigation
      spacemacs-org
-     (org :variables org-enable-github-support t)
      spacemacs-project
      spacemacs-visual
      spell-checking
      syntax-checking
      tree-sitter
      treemacs
+     theming
      unicode-fonts
      version-control
      windows-scripts
      yaml
+     (ranger :variables
+             ranger-override-dired 'deer
+             ranger-show-preview t)
+     (python :variables python-formatter 'black)
+     (shell :variables
+            close-window-with-terminal t
+            shell-default-position 'bottom
+            shell-default-shell 'eshell
+            )
+     (org :variables org-enable-github-support t)
      ;; (tabs :variables
      ;;        centaur-tabs-set-close-button t
      ;;        centaur-tabs-set-icons t
@@ -256,7 +258,7 @@ It should only modify the values of Spacemacs settings."
    ;; within a project.
    dotspacemacs-startup-lists '((recents . 5)
                                 (projects . 7)
-                                (todos . 2) ;TODO finish this 
+                                (todos . 2) ;TODO finish this
                                 (agenda . 2)
                                 (bookmarks . 4)
                                 )
@@ -298,9 +300,9 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(doom-spacegrey
-                         doom-one
-                         doom-oceanic-next)
+   dotspacemacs-themes '(doom-oceanic-next
+                         doom-spacegrey
+                         doom-one)
 
 
 
@@ -565,7 +567,7 @@ It should only modify the values of Spacemacs settings."
    ;; `trailing' to delete only the whitespace at end of lines, `changed' to
    ;; delete only whitespace for changed lines or `nil' to disable cleanup.
    ;; (default nil)
-   dotspacemacs-whitespace-cleanup nil
+   dotspacemacs-whitespace-cleanup 'trailing
 
    ;; If non-nil activate `clean-aindent-mode' which tries to correct
    ;; virtual indentation of simple modes. This can interfere with mode specific
@@ -598,7 +600,7 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-home-shorten-agenda-source 1
 
    ;; If non-nil then byte-compile some of Spacemacs files.
-   dotspacemacs-byte-compile nil))
+   dotspacemacs-byte-compile t))
 
 (defun dotspacemacs/user-env ()
   "Environment variables setup.
@@ -735,7 +737,7 @@ before packages are loaded."
         (setq dotspacemacs-persistent-server t)
         ;; (setq shell-file-name "C:\\msys64\\msys2.exe")
         ;; (setq shell-file-name "C:\\msys64\\mingw64.exe")
-        ;; (setq shell-file-name "C:\\msys64\\msys2_shell.cmd") 
+        ;; (setq shell-file-name "C:\\msys64\\msys2_shell.cmd")
         ;; (setq explicit-shell-file-name shell-file-name)
         ;; (add-to-list 'exec-path "C:\\msys64")
         ))
@@ -769,11 +771,43 @@ before packages are loaded."
 
   (spacemacs/set-leader-keys "fp" 'get-path)
 
-  (global-bartab-line-mode)
+  ;; (global-bartab-line-mode)
 
+  (setq magit-repository-directories
+        '(("~/dev/repos/" . 2) )
+        )
+  (defun my/magit-keybinds ()
+    (define-key magit-mode-map (kbd "j") 'evil-backward-char)
+    (define-key magit-mode-map (kbd "k") 'evil-next-visual-line)
+    (define-key magit-mode-map (kbd "l") 'evil-previous-visual-line)
+    (define-key magit-mode-map (kbd ";") 'evil-forward-char)
+   )
 
+  (add-hook 'magit-mode-hook 'my/magit-keybinds)
+
+  ;; (global-set-key                       ;
+  (defun my/magit-status-keybinds ()
+    (kl/set-in-state magit-status-mode-map (kbd "j") 'magit-dispatch)
+    (kl/set-in-state magit-status-mode-map (kbd "k") 'evil-next-visual-line)
+    (kl/set-in-state magit-status-mode-map (kbd "l") 'evil-previous-visual-line)
+    (kl/set-in-state magit-status-mode-map (kbd ";") 'magit-log)
+
+    ;; (define-key evil-evilified-state-map (kbd "j") 'magit-dispatch)
+    ;; (define-key evil-evilified-state-map (kbd "k") 'evil-next-visual-line)
+    ;; (define-key evil-evilified-state-map (kbd "l") 'evil-previous-visual-line)
+    ;; (define-key evil-evilified-state-map (kbd ";") 'magit-log)
+
+    ;; (kl/set-in-state magit-status-mode-map ())
+
+    ;; (define-key edebug-mode-map (kbd "j") 'magit-dispatch)
+    ;; (define-key edebug-mode-map (kbd "k") 'evil-next-visual-line)
+    ;; (define-key edebug-mode-map (kbd "l") 'evil-previous-visual-line)
+    ;; (define-key edebug-mode-map (kbd ";") 'magit-log)
+    )
+
+  (add-hook 'magit-status-sections-hook 'my/magit-status-keybinds)
+  (add-hook 'magit-status-mode-hook 'my/magit-status-keybinds)
 )
-
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
