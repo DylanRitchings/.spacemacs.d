@@ -46,7 +46,6 @@ This function should only modify configuration layer settings."
      ;; keyboard-layout
      auto-completion
      better-defaults
-     conda
      csv
      debug
      emacs-lisp
