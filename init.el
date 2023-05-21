@@ -812,7 +812,7 @@ before packages are loaded."
   (add-hook 'magit-status-mode-hook 'my/magit-status-keybinds)
 
   ;; (setq lsp-enable-imenu nil)
-  (setq debug-on-error t)
+  ;; (setq debug-on-error t)
 
 )
 
