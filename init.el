@@ -44,11 +44,9 @@ This function should only modify configuration layer settings."
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
 
-     ;; keyboard-layout
-     auto-completion
+     ;; (auto-completion :variables auto-completion-enable-help-tooltip f)
      better-defaults
      csv
-     cucumber
      debug
      emacs-lisp
      emoji
@@ -59,7 +57,7 @@ This function should only modify configuration layer settings."
      ipython-notebook
      ivy
      json
-     lsp
+     (lsp :variables lsp-signature-auto-activate nil)
      markdown
      multiple-cursors
      node
@@ -83,9 +81,9 @@ This function should only modify configuration layer settings."
      spacemacs-org
      spacemacs-project
      spacemacs-visual
-     spell-checking
+     ;; spell-checking
      syntax-checking
-     tree-sitter
+     ;; tree-sitter
      theming
      unicode-fonts
      (version-control :packages (not git-gutter))
@@ -99,6 +97,9 @@ This function should only modify configuration layer settings."
              python-backend 'lsp
              python-lsp-server 'pylsp
              python-test-runner 'pytest
+             python-eldoc-at-point nil
+             python-enable-eldoc nil
+             python-eldoc-function nil
              )
      (shell :variables
             close-window-with-terminal t
@@ -647,6 +648,8 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+  (setq eldoc-echo-area-use-multiline-p nil)
+  (setq lsp-signature-auto-activate nil)
 
   (defun my-ranger-mode-hook ()
 
