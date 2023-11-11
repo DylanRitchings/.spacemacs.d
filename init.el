@@ -1,5 +1,6 @@
 
 ;; This file is loaded by Spacemacs at startup.
+
 ;; It must be stored in your home directory.
 
 (defun dotspacemacs/layers ()
@@ -20,7 +21,7 @@ This function should only modify configuration layer settings."
    ;; installation feature and you have to explicitly list a layer in the
    ;; variable `dotspacemacs-configuration-layers' to install it.
    ;; (default 'unused)
-   dotspacemacs-enable-lazy-installation 'unused
+   dotspacemacs-enable-lazy-installation 'all
 
    ;; If non-nil then Spacemacs will ask for confirmation before installing
    ;; a layer lazily. (default t)
@@ -32,7 +33,8 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(typescript
+   '(html
+     typescript
      (go :variables go-backend 'lsp)
      ;; ----------------------------------------------------------------
      ;; Example of useful layers you may want to use right away.
@@ -43,8 +45,7 @@ This function should only modify configuration layer settings."
      ;;        shell-default-height 30
      ;;        shell-default-position 'bottom)
 
-     ;; keyboard-layout
-     auto-completion
+     (auto-completion :variables auto-completion-use-company-box t)
      better-defaults
      csv
      debug
@@ -54,18 +55,21 @@ This function should only modify configuration layer settings."
      (git :variables git-enable-magit-delta-plugin t)
      go
      helpful
+     ipython-notebook
      ivy
      json
-     lsp
+     (lsp :variables lsp-signature-auto-activate nil)
      markdown
      multiple-cursors
      node
+     dap
      org
      pdf
      prodigy
+     tree-sitter
      rust
      scala
-     shell-script;; s
+     ;; shell-script;; s
      spacemacs
      spacemacs-completion
      spacemacs-defaults
@@ -80,13 +84,12 @@ This function should only modify configuration layer settings."
      spacemacs-org
      spacemacs-project
      spacemacs-visual
-     spell-checking
+     ;; spell-checking
      syntax-checking
-     tree-sitter
-     treemacs
+     ;; tree-sitter
      theming
      unicode-fonts
-     version-control
+     (version-control :packages (not git-gutter))
      windows-scripts
      yaml
      (ranger :variables
@@ -96,11 +99,14 @@ This function should only modify configuration layer settings."
              python-formatter 'black
              python-backend 'lsp
              python-lsp-server 'pylsp
+             python-test-runner 'pytest
+             python-eldoc-at-point nil
+             python-enable-eldoc nil
+             python-eldoc-function nil
              )
      (shell :variables
             close-window-with-terminal t
             shell-default-position 'bottom
-            shell-default-shell 'eshell
             )
      (org :variables org-enable-github-support t)
      ;; (tabs :variables
@@ -126,7 +132,10 @@ This function should only modify configuration layer settings."
    ;; `dotspacemacs/user-config'. To use a local version of a package, use the
    ;; `:location' property: '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '()
+   dotspacemacs-additional-packages '(
+                                      feature-mode
+                                      ;; (jedi :location elpa)
+                                      )
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -620,10 +629,10 @@ This function is called immediately after `dotspacemacs/init', before layer
 configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
-  ;; (require 'package)
-  ;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+  (require 'package)
+  (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 
-  ;; (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
+  (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 
 )
 
@@ -642,6 +651,9 @@ This function is called at the very end of Spacemacs startup, after layer
 configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
+  (setq eldoc-echo-area-use-multiline-p nil)
+  (setq lsp-signature-auto-activate nil)
+
 
   (defun my-ranger-mode-hook ()
 
@@ -738,7 +750,9 @@ before packages are loaded."
       (progn
         (spacemacs/set-leader-keys "ot" 'open-winterm)
         (setq dotspacemacs-persistent-server t)
-        ;; (setq shell-file-name "C:\\msys64\\msys2.exe")
+        (setq shell-file-name "C:\\Users\\dylan.ritchings\\dev\\software\\Git\\usr\\bin\\zsh.exe")
+        (setq explicit-shell-file-name "C:\\Users\\dylan.ritchings\\dev\\software\\Git\\usr\\bin\\zsh.exe")
+        (setq shell-default-shell 'shell)
         ;; (setq shell-file-name "C:\\msys64\\mingw64.exe")
         ;; (setq shell-file-name "C:\\msys64\\msys2_shell.cmd")
         ;; (setq explicit-shell-file-name shell-file-name)
@@ -764,7 +778,10 @@ before packages are loaded."
   ;; (centaur-tabs-headline-match)
 
   ;;CENTAUR TABS END
+  (defun my/python-mode-hook ()
+    (add-to-list 'company-backends 'company-jedi))
 
+  (add-hook 'python-mode-hook 'my/python-mode-hook)
 
 
   (defun get-path ()
@@ -815,7 +832,13 @@ before packages are loaded."
 
 
 
-)
+  (setq max-specpdl-size 5000)
+
+  (setq lsp-enable-file-watchers nil)
+
+  (with-eval-after-load 'undo-tree
+    (setq undo-tree-auto-save-history nil))
+  ;; (setq lsp-enable-imenu nil)
 
 
 ;; Do not write anything past this comment. This is where Emacs will
@@ -831,7 +854,15 @@ This function is called at the very end of Spacemacs initialization."
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes
-   '("1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e" "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d" "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016" "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a" "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328" "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58" "4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4" "9ee253fcdb48535bf16df2700582b0a11fe99390b018755b941140f2fcdff219" "66f32da4e185defe7127e0dc8b779af99c00b60c751b0662276acaea985e2721" default))
+   '("1b8d67b43ff1723960eb5e0cba512a2c7a2ad544ddb2533a90101fd1852b426e"
+     "628278136f88aa1a151bb2d6c8a86bf2b7631fbea5f0f76cba2a0079cd910f7d"
+     "82d2cac368ccdec2fcc7573f24c3f79654b78bf133096f9b40c20d97ec1d8016"
+     "06f0b439b62164c6f8f84fdda32b62fb50b6d00e8b01c2208e55543a6337433a"
+     "4aee8551b53a43a883cb0b7f3255d6859d766b6c5e14bcb01bed572fcbef4328"
+     "bb08c73af94ee74453c90422485b29e5643b73b05e8de029a6909af6a3fb3f58"
+     "4cf3221feff536e2b3385209e9b9dc4c2e0818a69a1cdb4b522756bcdf4e00a4"
+     "9ee253fcdb48535bf16df2700582b0a11fe99390b018755b941140f2fcdff219"
+     "66f32da4e185defe7127e0dc8b779af99c00b60c751b0662276acaea985e2721" default))
  '(package-selected-packages
    '(linum-relative nlinum-relative lsp-origami lsp-ui add-node-modules-path emmet-mode import-js grizzl typescript-mode web-mode rainbow-mode aws-snippets evil-smartparens counsel-projectile counsel flyspell-correct-ivy ivy-avy ivy-hydra ivy-purpose ivy-xref ivy-yasnippet lsp-ivy smex swiper ivy wgrep bmx-mode company-emoji company-shell csv-mode dap-mode lsp-docker bui yaml emoji-cheat-sheet-plus emojify esh-help eshell-prompt-extras eshell-z evil-snipe fish-mode flycheck-bashate helpful elisp-refs insert-shebang json-mode json-navigator hierarchy json-reformat json-snatcher multi-term powershell prettier-js realgud test-simple loc-changes load-relative shell-pop shfmt reformatter terminal-here web-beautify xterm-color yaml-mode blacken code-cells cython-mode helm-pydoc importmagic epc ctable concurrent deferred live-py-mode lsp-pyright lsp-python-ms nose pip-requirements pipenv load-env-vars pippel poetry py-isort pydoc pyenv-mode pythonic pylookup pytest pyvenv sphinx-doc yapfify centaur-tabs company ws-butler writeroom-mode winum which-key volatile-highlights vim-powerline vi-tilde-fringe uuidgen use-package undo-tree treemacs-projectile treemacs-persp treemacs-icons-dired treemacs-evil toc-org term-cursor symon symbol-overlay string-inflection string-edit-at-point spacemacs-whitespace-cleanup spacemacs-purpose-popwin spaceline-all-the-icons space-doc restart-emacs request rainbow-delimiters quickrun popwin pcre2el password-generator paradox overseer org-superstar open-junk-file nameless multi-line macrostep lorem-ipsum link-hint inspector info+ indent-guide hybrid-mode hungry-delete holy-mode hl-todo highlight-parentheses highlight-numbers highlight-indentation hide-comnt help-fns+ helm-xref helm-themes helm-swoop helm-purpose helm-projectile helm-org helm-mode-manager helm-make helm-descbinds helm-ag google-translate golden-ratio font-lock+ flycheck-package flycheck-elsa flx-ido fancy-battery eyebrowse expand-region evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-textobj-line evil-surround evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state evil-lion evil-indent-plus evil-iedit-state evil-goggles evil-exchange evil-evilified-state evil-escape evil-easymotion evil-collection evil-cleverparens evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav elisp-def editorconfig dumb-jump drag-stuff dotenv-mode dired-quick-sort diminish devdocs define-word column-enforce-mode clean-aindent-mode centered-cursor-mode auto-highlight-symbol auto-compile aggressive-indent ace-link ace-jump-helm-line)))
 (custom-set-faces
