@@ -12,7 +12,7 @@ This function should only modify configuration layer settings."
    dotspacemacs-ask-for-lazy-installation t
    dotspacemacs-configuration-layer-path '()
 
-;;;; ----------------------------------------- CONFIG LAYERS ----------------------------------------------
+;; ---------------------------------- CONFIG LAYERS -------------------------------
    dotspacemacs-configuration-layers
    '(html
      typescript
@@ -178,7 +178,7 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-activate-smartparens-mode t
    dotspacemacs-smart-closing-parenthesis nil
    dotspacemacs-highlight-delimiters 'all
-   dotspacemacs-enable-server 1
+   dotspacemacs-enable-server t
    dotspacemacs-server-socket-dir nil
    dotspacemacs-search-tools '("rg" "ag" "pt" "ack" "grep")
    dotspacemacs-frame-title-format "%I@%S"
@@ -303,7 +303,7 @@ It should only modify the values of Spacemacs settings."
         (setq shell-file-name "zsh")
 
         ;;VTERM
-        (setq shell-default-shell multi-vterm)
+        (setq shell-default-shell "vterm")
         ))
 
   (if (eq system-type 'windows-nt)
