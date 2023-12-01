@@ -55,7 +55,8 @@ This function should only modify configuration layer settings."
      (git :variables git-enable-magit-delta-plugin t)
      go
      helpful
-     ipython-notebook
+     dap
+     ;; ipython-notebook
      ivy
      json
      (lsp :variables lsp-signature-auto-activate nil)
@@ -66,7 +67,10 @@ This function should only modify configuration layer settings."
      org
      pdf
      prodigy
-     tree-sitter
+     (tree-sitter :variables
+                  tree-sitter-fold-indicators-enable t
+                  tree-sitter-syntax-highlight-enable t
+                  )
      rust
      scala
      ;; shell-script;; s
@@ -109,47 +113,15 @@ This function should only modify configuration layer settings."
             shell-default-position 'bottom
             )
      (org :variables org-enable-github-support t)
-     ;; (tabs :variables
-     ;;        centaur-tabs-set-close-button t
-     ;;        centaur-tabs-set-icons t
-     ;;        centaur-tabs-style "rounded"
-     ;;        centaur-tabs-set-bar 'left
-     ;;        centaur-tabs-set-modified-marker t
-     ;;        centaur-tabs-modified-marker-selected "○"
-     ;;        centaur-tabs-modified-marker-unselected "*"
-     ;;        ;;x-underline-at-descent-line t
-     ;;        centaur-tabs-cycle-scope 'tabs
-     ;;        centaur-tabs-group-by-projectile-project t
-     ;;        )
      )
 
-
-   ;; List of additional packages that will be installed without being wrapped
-   ;; in a layer (generally the packages are installed only and should still be
-   ;; loaded using load/require/use-package in the user-config section below in
-   ;; this file). If you need some configuration for these packages, then
-   ;; consider creating a layer. You can also put the configuration in
-   ;; `dotspacemacs/user-config'. To use a local version of a package, use the
-   ;; `:location' property: '(your-package :location "~/path/to/your-package/")
-   ;; Also include the dependencies as they will not be resolved automatically.
    dotspacemacs-additional-packages '(
                                       feature-mode
                                       ;; (jedi :location elpa)
                                       )
 
-   ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
-
-   ;; A list of packages that will not be installed and loaded.
    dotspacemacs-excluded-packages '()
-
-   ;; Defines the behaviour of Spacemacs when installing packages.
-   ;; Possible values are `used-only', `used-but-keep-unused' and `all'.
-   ;; `used-only' installs only explicitly used packages and deletes any unused
-   ;; packages as well as their unused dependencies. `used-but-keep-unused'
-   ;; installs only the used packages but won't delete unused ones. `all'
-   ;; installs *all* packages supported by Spacemacs and never uninstalls them.
-   ;; (default is `used-only')
    dotspacemacs-install-packages 'used-only))
 
 (defun dotspacemacs/init ()
@@ -157,131 +129,29 @@ This function should only modify configuration layer settings."
 This function is called at the very beginning of Spacemacs startup,
 before layer configuration.
 It should only modify the values of Spacemacs settings."
-  ;; This setq-default sexp is an exhaustive list of all the supported
-  ;; spacemacs settings.
   (setq-default
-   ;; If non-nil then enable support for the portable dumper. You'll need to
-   ;; compile Emacs 27 from source following the instructions in file
-   ;; EXPERIMENTAL.org at to root of the git repository.
-   ;;
-   ;; WARNING: pdumper does not work with Native Compilation, so it's disabled
-   ;; regardless of the following setting when native compilation is in effect.
-   ;;
-   ;; (default nil)
    dotspacemacs-enable-emacs-pdumper nil
-
-   ;; Name of executable file pointing to emacs 27+. This executable must be
-   ;; in your PATH.
-   ;; (default "emacs")
    dotspacemacs-emacs-pdumper-executable-file "emacs"
-
-   ;; Name of the Spacemacs dump file. This is the file will be created by the
-   ;; portable dumper in the cache directory under dumps sub-directory.
-   ;; To load it when starting Emacs add the parameter `--dump-file'
-   ;; when invoking Emacs 27.1 executable on the command line, for instance:
-   ;;   ./emacs --dump-file=$HOME/.emacs.d/.cache/dumps/spacemacs-27.1.pdmp
-   ;; (default (format "spacemacs-%s.pdmp" emacs-version))
    dotspacemacs-emacs-dumper-dump-file (format "spacemacs-%s.pdmp" emacs-version)
-
-   ;; If non-nil ELPA repositories are contacted via HTTPS whenever it's
-   ;; possible. Set it to nil if you have no way to use HTTPS in your
-   ;; environment, otherwise it is strongly recommended to let it set to t.
-   ;; This variable has no effect if Emacs is launched with the parameter
-   ;; `--insecure' which forces the value of this variable to nil.
-   ;; (default t)
    dotspacemacs-elpa-https t
-
-   ;; Maximum allowed time in seconds to contact an ELPA repository.
-   ;; (default 5)
-   dotspacemacs-elpa-timeout 5
-
-   ;; Set `gc-cons-threshold' and `gc-cons-percentage' when startup finishes.
-   ;; This is an advanced option and should not be changed unless you suspect
-   ;; performance issues due to garbage collection operations.
-   ;; (default '(100000000 0.1))
    dotspacemacs-gc-cons '(100000000 0.1)
-
-   ;; Set `read-process-output-max' when startup finishes.
-   ;; This defines how much data is read from a foreign process.
-   ;; Setting this >= 1 MB should increase performance for lsp servers
-   ;; in emacs 27.
-   ;; (default (* 1024 1024))
    dotspacemacs-read-process-output-max (* 1024 1024)
-
-   ;; If non-nil then Spacelpa repository is the primary source to install
-   ;; a locked version of packages. If nil then Spacemacs will install the
-   ;; latest version of packages from MELPA. Spacelpa is currently in
-   ;; experimental state please use only for testing purposes.
-   ;; (default nil)
    dotspacemacs-use-spacelpa nil
-
-   ;; If non-nil then verify the signature for downloaded Spacelpa archives.
-   ;; (default t)
    dotspacemacs-verify-spacelpa-archives t
-
-   ;; If non-nil then spacemacs will check for updates at startup
-   ;; when the current branch is not `develop'. Note that checking for
-   ;; new versions works via git commands, thus it calls GitHub services
-   ;; whenever you start Emacs. (default nil)
    dotspacemacs-check-for-update nil
-
-   ;; If non-nil, a form that evaluates to a package directory. For example, to
-   ;; use different package directories for different Emacs versions, set this
-   ;; to `emacs-version'. (default 'emacs-version)
    dotspacemacs-elpa-subdirectory 'emacs-version
-
-   ;; One of `vim', `emacs' or `hybrid'.
-   ;; `hybrid' is like `vim' except that `insert state' is replaced by the
-   ;; `hybrid state' with `emacs' key bindings. The value can also be a list
-   ;; with `:variables' keyword (similar to layers). Check the editing styles
-   ;; section of the documentation for details on available variables.
-   ;; (default 'vim)
    dotspacemacs-editing-style 'vim
-
-   ;; If non-nil show the version string in the Spacemacs buffer. It will
-   ;; appear as (spacemacs version)@(emacs version)
-   ;; (default t)
    dotspacemacs-startup-buffer-show-version t
-
-   ;; Specify the startup banner. Default value is `official', it displays
-   ;; the official spacemacs logo. An integer value is the index of text
-   ;; banner, `random' chooses a random text banner in `core/banners'
-   ;; directory. A string value must be a path to an image format supported
-   ;; by your Emacs build.
-   ;; If the value is nil then no banner is displayed. (default 'official)
    dotspacemacs-startup-banner 'official
-
-   ;; Scale factor controls the scaling (size) of the startup banner. Default
-   ;; value is `auto' for scaling the logo automatically to fit all buffer
-   ;; contents, to a maximum of the full image height and a minimum of 3 line
-   ;; heights. If set to a number (int or float) it is used as a constant
-   ;; scaling factor for the default logo size.
    dotspacemacs-startup-banner-scale 'auto
-
-   ;; List of items to show in startup buffer or an association list of
-   ;; the form `(list-type . list-size)`. If nil then it is disabled.
-   ;; Possible values for list-type are:
-   ;; `recents' `recents-by-project' `bookmarks' `projects' `agenda' `todos'.
-   ;; List sizes may be nil, in which case
-   ;; `spacemacs-buffer-startup-lists-length' takes effect.
-   ;; The exceptional case is `recents-by-project', where list-type must be a
-   ;; pair of numbers, e.g. `(recents-by-project . (7 .  5))', where the first
-   ;; number is the project limit and the second the limit on the recent files
-   ;; within a project.
    dotspacemacs-startup-lists '((recents . 5)
                                 (projects . 7)
                                 (todos . 2) ;TODO finish this
                                 (agenda . 2)
                                 (bookmarks . 4)
                                 )
-
-   ;; True if the home buffer should respond to resize events. (default t)
    dotspacemacs-startup-buffer-responsive t
-
-   ;; Show numbers before the startup list lines. (default t)
    dotspacemacs-show-startup-list-numbers t
-
-   ;; The minimum delay in seconds between number key presses. (default 0.4)
    dotspacemacs-startup-buffer-multi-digit-delay 0.4
 
    ;; If non-nil, show file icons for entries and headings on Spacemacs home buffer.
@@ -395,7 +265,7 @@ It should only modify the values of Spacemacs settings."
    ;; auto-save the file in-place, `cache' to auto-save the file to another
    ;; file stored in the cache directory and `nil' to disable auto-saving.
    ;; (default 'cache)
-   dotspacemacs-auto-save-file-location 'cache
+   dotspacemacs-auto-save-file-location 'original
 
    ;; Maximum number of rollback slots to keep in the cache. (default 5)
    dotspacemacs-max-rollback-slots 5
@@ -563,7 +433,7 @@ It should only modify the values of Spacemacs settings."
    ;; performance issues, instead of calculating the frame title by
    ;; `spacemacs/title-prepare' all the time.
    ;; (default "%I@%S")
-   dotspacemacs-frame-title-format "%I@%S"
+   dotspacemacs-frame-title-format "%a@%S"
 
    ;; Format specification for setting the icon title format
    ;; (default nil - same as frame-title-format)
@@ -753,6 +623,7 @@ before packages are loaded."
         (setq shell-file-name "C:\\Users\\dylan.ritchings\\dev\\software\\Git\\usr\\bin\\zsh.exe")
         (setq explicit-shell-file-name "C:\\Users\\dylan.ritchings\\dev\\software\\Git\\usr\\bin\\zsh.exe")
         (setq shell-default-shell 'shell)
+        (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
         ;; (setq shell-file-name "C:\\msys64\\mingw64.exe")
         ;; (setq shell-file-name "C:\\msys64\\msys2_shell.cmd")
         ;; (setq explicit-shell-file-name shell-file-name)
@@ -804,7 +675,6 @@ before packages are loaded."
    )
 
   (add-hook 'magit-mode-hook 'my/magit-keybinds)
-
   ;; (global-set-key                       ;
   (defun my/magit-status-keybinds ()
     (kl/set-in-state magit-status-mode-map (kbd "j") 'magit-dispatch)
@@ -836,8 +706,68 @@ before packages are loaded."
     (setq undo-tree-auto-save-history nil))
   ;; (setq lsp-enable-imenu nil)
   ;; (setq debug-on-error t)
+
+  ;; (require 'jupyter)
+  ;; (add-hook 'ein:ipynb-mode 'jupyter)
+  (add-to-list 'auto-mode-alist '("\\.ipynb\\'" . python-mode))
+
+  (add-hook 'python-mode-hook 'code-cells-mode-maybe)
+  ;; (add-hook 'ein:ipynb-mode-hook 'code-cells-mode)
+  (add-hook 'python-mode-hook 'code-cells-config)
+
+
 )
 
+
+(defun code-cells-config ()
+  (define-key evil-normal-state-map (kbd ", j m") 'insert-markdown-cell)
+  (define-key evil-normal-state-map (kbd ", j c") 'insert-code-cell)
+  (define-key evil-normal-state-map (kbd ", j e") 'code-cells-eval-all)
+  (define-key evil-normal-state-map (kbd ", j r") 'code-cells-eval)
+  (define-key evil-normal-state-map (kbd ", j l") 'code-cells-move-cell-up)
+  (define-key evil-normal-state-map (kbd ", j k") 'code-cells-move-cell-down)
+
+  )
+
+(defun insert-markdown-cell ()
+  "Inserts a markdown cell into the buffer."
+  (interactive)
+  (goto-end-of-cell)
+  (insert "\n# %% [markdown]\n\"\"\"\n\n\"\"\"\n\n")
+  (backward-char 5))
+
+(defun highlight-whole-buffer ()
+  "Highlight the entire buffer in visual mode."
+  (interactive)
+  (evil-visual-select (point-min) (point-max)))
+
+
+(defun code-cells-eval-all ()
+  (interactive)
+  (highlight-whole-buffer)
+  (code-cells-eval-above 0)
+  )
+
+
+(defun insert-code-cell ()
+  "Inserts a markdown cell into the buffer."
+  (interactive)
+  (goto-end-of-cell)
+  (insert "\n# %% \n\n")
+  (previous-line 1)
+
+  )
+
+
+(defun goto-end-of-cell ()
+  (interactive)
+  ;; Search for the first occurrence of "# %%"
+  (if (search-forward "# %%" nil t)
+      ;; If found, move to the beginning of the line before "# %%"
+      (previous-line 1)
+    ;; If not found, move to the end of the buffer
+    (goto-char (point-max)))
+  )
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -862,67 +792,60 @@ This function is called at the very end of Spacemacs initialization."
      "9ee253fcdb48535bf16df2700582b0a11fe99390b018755b941140f2fcdff219"
      "66f32da4e185defe7127e0dc8b779af99c00b60c751b0662276acaea985e2721" default))
  '(package-selected-packages
-   '(all-the-icons-completion quelpa-use-package quelpa company-web
-                              web-completion-data counsel-css helm-css-scss
-                              impatient-mode pug-mode sass-mode haml-mode
-                              scss-mode slim-mode tagedit feature-mode undo-fu
-                              ob-ipython babel subed xah-fly-keys lsp-origami
-                              lsp-ui add-node-modules-path emmet-mode import-js
-                              grizzl typescript-mode web-mode rainbow-mode
-                              aws-snippets evil-smartparens counsel-projectile
-                              counsel flyspell-correct-ivy ivy-avy ivy-hydra
-                              ivy-purpose ivy-xref ivy-yasnippet lsp-ivy smex
-                              swiper ivy wgrep bmx-mode company-emoji
-                              company-shell csv-mode dap-mode lsp-docker bui
-                              yaml emoji-cheat-sheet-plus emojify esh-help
-                              eshell-prompt-extras eshell-z evil-snipe fish-mode
-                              flycheck-bashate helpful elisp-refs insert-shebang
-                              json-mode json-navigator hierarchy json-reformat
-                              json-snatcher multi-term powershell prettier-js
-                              realgud test-simple loc-changes load-relative
-                              shell-pop shfmt reformatter terminal-here
-                              web-beautify xterm-color yaml-mode blacken
-                              code-cells cython-mode helm-pydoc importmagic epc
-                              ctable concurrent deferred live-py-mode
-                              lsp-pyright lsp-python-ms nose pip-requirements
-                              pipenv load-env-vars pippel poetry py-isort pydoc
-                              pyenv-mode pythonic pylookup pytest pyvenv
-                              sphinx-doc yapfify centaur-tabs company ws-butler
-                              writeroom-mode winum which-key volatile-highlights
-                              vim-powerline vi-tilde-fringe uuidgen use-package
-                              treemacs-projectile treemacs-persp
-                              treemacs-icons-dired treemacs-evil toc-org
-                              term-cursor symon symbol-overlay string-inflection
-                              string-edit-at-point spacemacs-whitespace-cleanup
-                              spacemacs-purpose-popwin spaceline-all-the-icons
-                              space-doc restart-emacs request rainbow-delimiters
-                              quickrun popwin pcre2el password-generator paradox
-                              overseer org-superstar open-junk-file nameless
-                              multi-line macrostep lorem-ipsum link-hint
-                              inspector info+ indent-guide hybrid-mode
-                              hungry-delete holy-mode hl-todo
-                              highlight-parentheses highlight-numbers
-                              highlight-indentation hide-comnt help-fns+
-                              helm-xref helm-themes helm-swoop helm-purpose
-                              helm-projectile helm-org helm-mode-manager
-                              helm-make helm-descbinds helm-ag google-translate
-                              golden-ratio font-lock+ flycheck-package
-                              flycheck-elsa flx-ido fancy-battery eyebrowse
-                              expand-region evil-visualstar
-                              evil-visual-mark-mode evil-unimpaired evil-tutor
-                              evil-textobj-line evil-surround evil-numbers
-                              evil-nerd-commenter evil-mc evil-matchit
-                              evil-lisp-state evil-lion evil-indent-plus
-                              evil-iedit-state evil-goggles evil-exchange
-                              evil-evilified-state evil-escape evil-easymotion
-                              evil-collection evil-cleverparens evil-args
-                              evil-anzu eval-sexp-fu emr elisp-slime-nav
-                              elisp-def editorconfig dumb-jump drag-stuff
-                              dotenv-mode dired-quick-sort diminish devdocs
-                              define-word column-enforce-mode clean-aindent-mode
-                              centered-cursor-mode auto-highlight-symbol
-                              auto-compile aggressive-indent ace-link
-                              ace-jump-helm-line))
+   '(ipython-shell-send zmq jupyter ein all-the-icons-completion quelpa-use-package
+                        quelpa company-web web-completion-data counsel-css
+                        helm-css-scss impatient-mode pug-mode sass-mode
+                        haml-mode scss-mode slim-mode tagedit feature-mode
+                        undo-fu ob-ipython babel subed xah-fly-keys lsp-origami
+                        lsp-ui add-node-modules-path emmet-mode import-js grizzl
+                        typescript-mode web-mode rainbow-mode aws-snippets
+                        evil-smartparens counsel-projectile counsel
+                        flyspell-correct-ivy ivy-avy ivy-hydra ivy-purpose
+                        ivy-xref ivy-yasnippet lsp-ivy smex swiper ivy wgrep
+                        bmx-mode company-emoji company-shell csv-mode dap-mode
+                        lsp-docker bui yaml emoji-cheat-sheet-plus emojify
+                        esh-help eshell-prompt-extras eshell-z evil-snipe
+                        fish-mode flycheck-bashate helpful elisp-refs
+                        insert-shebang json-mode json-navigator hierarchy
+                        json-reformat json-snatcher multi-term powershell
+                        prettier-js realgud test-simple loc-changes
+                        load-relative shell-pop shfmt reformatter terminal-here
+                        web-beautify xterm-color yaml-mode blacken code-cells
+                        cython-mode helm-pydoc importmagic epc ctable concurrent
+                        deferred live-py-mode lsp-pyright lsp-python-ms nose
+                        pip-requirements pipenv load-env-vars pippel poetry
+                        py-isort pydoc pyenv-mode pythonic pylookup pytest
+                        pyvenv sphinx-doc yapfify centaur-tabs company ws-butler
+                        writeroom-mode winum which-key volatile-highlights
+                        vim-powerline vi-tilde-fringe uuidgen use-package
+                        treemacs-projectile treemacs-persp treemacs-icons-dired
+                        treemacs-evil toc-org term-cursor symon symbol-overlay
+                        string-inflection string-edit-at-point
+                        spacemacs-whitespace-cleanup spacemacs-purpose-popwin
+                        spaceline-all-the-icons space-doc restart-emacs request
+                        rainbow-delimiters quickrun popwin pcre2el
+                        password-generator paradox overseer org-superstar
+                        open-junk-file nameless multi-line macrostep lorem-ipsum
+                        link-hint inspector info+ indent-guide hybrid-mode
+                        hungry-delete holy-mode hl-todo highlight-parentheses
+                        highlight-numbers highlight-indentation hide-comnt
+                        help-fns+ helm-xref helm-themes helm-swoop helm-purpose
+                        helm-projectile helm-org helm-mode-manager helm-make
+                        helm-descbinds helm-ag google-translate golden-ratio
+                        font-lock+ flycheck-package flycheck-elsa flx-ido
+                        fancy-battery eyebrowse expand-region evil-visualstar
+                        evil-visual-mark-mode evil-unimpaired evil-tutor
+                        evil-textobj-line evil-surround evil-numbers
+                        evil-nerd-commenter evil-mc evil-matchit evil-lisp-state
+                        evil-lion evil-indent-plus evil-iedit-state evil-goggles
+                        evil-exchange evil-evilified-state evil-escape
+                        evil-easymotion evil-collection evil-cleverparens
+                        evil-args evil-anzu eval-sexp-fu emr elisp-slime-nav
+                        elisp-def editorconfig dumb-jump drag-stuff dotenv-mode
+                        dired-quick-sort diminish devdocs define-word
+                        column-enforce-mode clean-aindent-mode
+                        centered-cursor-mode auto-highlight-symbol auto-compile
+                        aggressive-indent ace-link ace-jump-helm-line))
  '(warning-suppress-types '((use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
